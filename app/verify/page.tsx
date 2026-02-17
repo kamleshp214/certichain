@@ -1,13 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { QRScanner } from '@/components/verify/qr-scanner';
 import { Search, QrCode, Shield, CheckCircle, Lock, Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+
+// Lazy load QR Scanner - only when user clicks scan button
+const QRScanner = dynamic(() => import('@/components/verify/qr-scanner').then(mod => ({ default: mod.QRScanner })), {
+  ssr: false
+});
 
 export default function VerifyPage() {
   const router = useRouter();

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -83,16 +83,19 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-40 bg-gray-800 rounded-lg animate-pulse" />
-          ))}
-        </div>
+  // Memoize loading skeleton to prevent re-renders
+  const loadingSkeleton = useMemo(() => (
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-40 bg-gray-800 rounded-lg animate-pulse" />
+        ))}
       </div>
-    );
+    </div>
+  ), []);
+
+  if (loading) {
+    return loadingSkeleton;
   }
 
   return (

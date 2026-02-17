@@ -1,15 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { useParams } from 'next/navigation';
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Certificate } from '@/types/certificate';
 import { generateCertificateHash } from '@/lib/hash';
-import { verifyCertificateOnChain } from '@/lib/blockchain';
-import { VerificationResult } from '@/components/verify/verification-result';
 import { Loader2 } from 'lucide-react';
+
+// Lazy load verification result component
+const VerificationResult = dynamic(() => import('@/components/verify/verification-result').then(mod => ({ default: mod.VerificationResult })), {
+  ssr: false,
+  loading: () => (
+    <div className="flex flex-col items-center justify-center py-20">
+      <Loader2 className="w-12 h-12 text-white animate-spin" />
+    </div>
+  )
+});
 
 export default function VerifyCertificatePage() {
   const params = useParams();
@@ -60,6 +69,8 @@ export default function VerifyCertificatePage() {
       });
 
       try {
+        // Lazy load blockchain module only when needed
+        const { verifyCertificateOnChain } = await import('@/lib/blockchain');
         const chainData = await verifyCertificateOnChain(certificateId);
         
         if (!chainData.isValid) {

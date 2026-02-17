@@ -9,7 +9,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Download, Ban, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
-import { generateCertificatePDF } from '@/lib/pdf-generator';
 import { EmptyState } from '@/components/dashboard/empty-state';
 
 export default function IssuedCertificates() {
@@ -59,6 +58,9 @@ export default function IssuedCertificates() {
   const handleDownload = async (cert: Certificate) => {
     try {
       console.log('Downloading certificate:', cert);
+      
+      // Lazy load PDF generator only when needed
+      const { generateCertificatePDF } = await import('@/lib/pdf-generator');
       
       const pdfBytes = await generateCertificatePDF({
         certificateId: cert.certificateId,

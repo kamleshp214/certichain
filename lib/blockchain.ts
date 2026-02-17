@@ -9,7 +9,12 @@ const CONTRACT_ABI = [
 ];
 
 export async function getContract() {
-  if (typeof window === 'undefined' || !window.ethereum) {
+  // Ensure this only runs on client
+  if (typeof window === 'undefined') {
+    throw new Error('Blockchain operations only available on client');
+  }
+  
+  if (!window.ethereum) {
     throw new Error('MetaMask not installed');
   }
 
@@ -21,6 +26,11 @@ export async function getContract() {
 }
 
 export async function getReadOnlyContract() {
+  // Ensure this only runs on client
+  if (typeof window === 'undefined') {
+    throw new Error('Blockchain operations only available on client');
+  }
+  
   const provider = new ethers.JsonRpcProvider(
     process.env.NEXT_PUBLIC_RPC_URL || 'https://rpc-amoy.polygon.technology'
   );

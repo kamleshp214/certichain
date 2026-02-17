@@ -1,20 +1,31 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CertificateForm } from '@/components/certificate/certificate-form';
-import { CertificatePreview } from '@/components/certificate/certificate-preview';
-import { IssuingProgress } from '@/components/certificate/issuing-progress';
 import { useCertificateStore } from '@/store/certificate-store';
 import { generateCertificateId, generateCertificateHash } from '@/lib/hash';
-import { generateCertificatePDF } from '@/lib/pdf-generator';
-import { issueCertificateOnChain } from '@/lib/blockchain';
 import { collection, addDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Download, Sparkles, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+// Lazy load heavy components
+const CertificateForm = dynamic(() => import('@/components/certificate/certificate-form').then(mod => ({ default: mod.CertificateForm })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-900 rounded-xl animate-pulse" />
+});
+
+const CertificatePreview = dynamic(() => import('@/components/certificate/certificate-preview').then(mod => ({ default: mod.CertificatePreview })), {
+  ssr: false,
+  loading: () => <div className="h-96 bg-gray-900 rounded-xl animate-pulse" />
+});
+
+const IssuingProgress = dynamic(() => import('@/components/certificate/issuing-progress').then(mod => ({ default: mod.IssuingProgress })), {
+  ssr: false
+});
 
 export default function CreateCertificate() {
   const router = useRouter();
@@ -86,6 +97,8 @@ export default function CreateCertificate() {
       setIssuingStep(4);
 
       try {
+        // Lazy load blockchain module
+        const { issueCertificateOnChain } = await import('@/lib/blockchain');
         const txHash = await issueCertificateOnChain(certId, hash);
         await updateDoc(docRef, {
           txHash,
@@ -94,6 +107,8 @@ export default function CreateCertificate() {
         console.error('Blockchain error:', error);
       }
 
+      // Lazy load PDF generator
+      const { generateCertificatePDF } = await import('@/lib/pdf-generator');
       const pdfBytes = await generateCertificatePDF({
         ...certData,
         template: data.template,
