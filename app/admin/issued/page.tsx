@@ -223,7 +223,7 @@ export default function IssuedCertificates() {
                             <p className="font-medium text-white">{cert.recipientName}</p>
                             <p className="text-xs text-gray-400 font-mono">{cert.certificateId}</p>
                             {cert.isRevoked && cert.revokedAt && (
-                              <p className="text-xs text-red-400 mt-1">
+                              <p className="text-xs text-gray-400 mt-1">
                                 Revoked: {new Date(cert.revokedAt).toLocaleDateString()}
                               </p>
                             )}
@@ -268,7 +268,7 @@ export default function IssuedCertificates() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleRevoke(cert)}
-                                className="text-gray-400 hover:text-red-400 transition-smooth"
+                                className="text-gray-400 hover:text-white transition-smooth"
                                 title="Revoke Certificate"
                               >
                                 <Ban className="w-4 h-4" />
@@ -278,7 +278,7 @@ export default function IssuedCertificates() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleRestore(cert)}
-                                className="text-gray-400 hover:text-green-400 transition-smooth"
+                                className="text-gray-400 hover:text-white transition-smooth"
                                 title="Restore Certificate"
                               >
                                 <RotateCcw className="w-4 h-4" />
@@ -314,7 +314,7 @@ export default function IssuedCertificates() {
                       <p className="text-sm text-gray-300">{cert.courseName}</p>
                       <p className="text-xs text-gray-400 font-mono mt-1">{cert.certificateId}</p>
                       {cert.isRevoked && cert.revokedAt && (
-                        <p className="text-xs text-red-400 mt-1">
+                        <p className="text-xs text-gray-400 mt-1">
                           Revoked: {new Date(cert.revokedAt).toLocaleDateString()}
                         </p>
                       )}

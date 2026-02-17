@@ -105,7 +105,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
             disabled={disabled}
           />
           {errors.recipientName && (
-            <p className="text-red-400 text-sm mt-1">{errors.recipientName.message}</p>
+            <p className="text-white text-sm mt-1">{errors.recipientName.message}</p>
           )}
         </div>
 
@@ -123,7 +123,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
             disabled={disabled}
           />
           {errors.courseName && (
-            <p className="text-red-400 text-sm mt-1">{errors.courseName.message}</p>
+            <p className="text-white text-sm mt-1">{errors.courseName.message}</p>
           )}
         </div>
 
@@ -141,7 +141,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
             disabled={disabled}
           />
           {errors.institutionName && (
-            <p className="text-red-400 text-sm mt-1">{errors.institutionName.message}</p>
+            <p className="text-white text-sm mt-1">{errors.institutionName.message}</p>
           )}
         </div>
 
@@ -159,7 +159,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
             disabled={disabled}
           />
           {errors.issuerName && (
-            <p className="text-red-400 text-sm mt-1">{errors.issuerName.message}</p>
+            <p className="text-white text-sm mt-1">{errors.issuerName.message}</p>
           )}
         </div>
 
@@ -189,7 +189,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
               onFormChange('template', e.target.value);
             }}
             disabled={disabled}
-            className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+            className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
           >
             <option value="academic">Academic / Formal</option>
             <option value="corporate">Corporate / Modern</option>
@@ -309,7 +309,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
                     <select
                       {...register('qrPosition')}
                       disabled={disabled}
-                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
                     >
                       <option value="bottom-right">Bottom Right</option>
                       <option value="bottom-left">Bottom Left</option>
@@ -324,7 +324,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
                     <select
                       {...register('logoPosition')}
                       disabled={disabled}
-                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
                     >
                       <option value="top-center">Top Center</option>
                       <option value="top-left">Top Left</option>
@@ -338,7 +338,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
                     <select
                       {...register('signaturePosition')}
                       disabled={disabled}
-                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-600 disabled:opacity-50"
+                      className="flex h-11 w-full rounded-lg border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white disabled:opacity-50"
                     >
                       <option value="bottom-center">Bottom Center</option>
                       <option value="bottom-left">Bottom Left</option>
@@ -352,7 +352,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Institution Logo
                     </label>
-                    <label className="flex items-center justify-center h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-blue-600 transition-colors">
+                    <label className="flex items-center justify-center h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-white transition-colors">
                       <input
                         type="file"
                         accept="image/*"
@@ -375,7 +375,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
                     <label className="block text-sm font-medium text-gray-300 mb-2">
                       Signature Image
                     </label>
-                    <label className="flex items-center justify-center h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-blue-600 transition-colors">
+                    <label className="flex items-center justify-center h-32 border-2 border-dashed border-gray-700 rounded-lg cursor-pointer hover:border-white transition-colors">
                       <input
                         type="file"
                         accept="image/*"

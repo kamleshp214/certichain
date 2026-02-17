@@ -42,8 +42,8 @@ function AcademicTemplate({ data }: { data: any }) {
   return (
     <div className="relative w-full h-full bg-white flex flex-col p-8">
       {/* Double border */}
-      <div className="absolute inset-4 border-[3px] border-blue-900" />
-      <div className="absolute inset-6 border border-blue-900" />
+      <div className="absolute inset-4 border-[3px] border-gray-900" />
+      <div className="absolute inset-6 border border-gray-900" />
 
       {/* Content wrapper */}
       <div className="relative flex flex-col h-full justify-between p-8">
@@ -55,15 +55,15 @@ function AcademicTemplate({ data }: { data: any }) {
           )}
 
           {/* Institution */}
-          <p className="text-[10px] font-bold text-blue-900 tracking-[0.2em] uppercase">
+          <p className="text-[10px] font-bold text-gray-900 tracking-[0.2em] uppercase">
             {data.institutionName || 'Institution Name'}
           </p>
 
           {/* Title */}
-          <h1 className="text-xl font-serif font-bold text-blue-900 mt-3">
+          <h1 className="text-xl font-serif font-bold text-gray-900 mt-3">
             CERTIFICATE OF COMPLETION
           </h1>
-          <div className="w-24 h-0.5 bg-amber-600 mx-auto mt-2" />
+          <div className="w-24 h-0.5 bg-gray-900 mx-auto mt-2" />
         </div>
 
         {/* Body section */}
@@ -76,7 +76,7 @@ function AcademicTemplate({ data }: { data: any }) {
           <div className="w-32 h-px bg-gray-400" />
 
           <p className="text-[9px] text-gray-700 italic mt-2">has successfully completed the course</p>
-          <p className="text-base font-serif font-bold text-blue-900 px-8">
+          <p className="text-base font-serif font-bold text-gray-900 px-8">
             {data.courseName || 'Course Name'}
           </p>
 
@@ -94,7 +94,7 @@ function AcademicTemplate({ data }: { data: any }) {
         </div>
 
         {/* Footer section */}
-        <div className="border-t border-blue-900 pt-4">
+        <div className="border-t border-gray-900 pt-4">
           <div className="flex justify-between items-end">
             {/* Date */}
             <div className="text-left text-[8px]">
@@ -117,7 +117,7 @@ function AcademicTemplate({ data }: { data: any }) {
             </div>
 
             {/* Verification badge */}
-            <div className="flex items-center gap-1 text-[8px] text-blue-900">
+            <div className="flex items-center gap-1 text-[8px] text-gray-900">
               <Shield className="w-3 h-3" />
               <span className="font-medium">Verified</span>
             </div>
@@ -192,40 +192,40 @@ function CorporateTemplate({ data }: { data: any }) {
 
 function PremiumTemplate({ data }: { data: any }) {
   return (
-    <div className="relative w-full h-full bg-gradient-to-br from-amber-50 to-white flex flex-col p-6">
+    <div className="relative w-full h-full bg-white flex flex-col p-6">
       {/* Ornamental double border */}
-      <div className="absolute inset-3 border-[4px] border-amber-700" />
-      <div className="absolute inset-5 border-[2px] border-amber-600" />
+      <div className="absolute inset-3 border-[4px] border-gray-900" />
+      <div className="absolute inset-5 border-[2px] border-gray-700" />
 
       {/* Corner decorations */}
-      <div className="absolute top-6 left-6 w-4 h-4 border-t-2 border-l-2 border-amber-700" />
-      <div className="absolute top-6 right-6 w-4 h-4 border-t-2 border-r-2 border-amber-700" />
-      <div className="absolute bottom-6 left-6 w-4 h-4 border-b-2 border-l-2 border-amber-700" />
-      <div className="absolute bottom-6 right-6 w-4 h-4 border-b-2 border-r-2 border-amber-700" />
+      <div className="absolute top-6 left-6 w-4 h-4 border-t-2 border-l-2 border-gray-900" />
+      <div className="absolute top-6 right-6 w-4 h-4 border-t-2 border-r-2 border-gray-900" />
+      <div className="absolute bottom-6 left-6 w-4 h-4 border-b-2 border-l-2 border-gray-900" />
+      <div className="absolute bottom-6 right-6 w-4 h-4 border-b-2 border-r-2 border-gray-900" />
 
       {/* Content wrapper */}
       <div className="relative flex flex-col h-full justify-between p-8">
         {/* Header section */}
-        <div className="text-center border-b border-amber-700 pb-4 space-y-2">
+        <div className="text-center border-b border-gray-900 pb-4 space-y-2">
           {data.logoUrl && data.logoUrl !== '' && (
             <img src={data.logoUrl} alt="Logo" className="w-12 h-12 object-contain mx-auto mb-1" />
           )}
 
-          <p className="text-[9px] italic text-amber-800">
+          <p className="text-[9px] italic text-gray-800">
             {data.institutionName || 'Institution Name'}
           </p>
 
-          <h1 className="text-lg font-serif font-bold text-amber-900 mt-2">
+          <h1 className="text-lg font-serif font-bold text-gray-900 mt-2">
             Certificate of Excellence
           </h1>
-          <div className="w-20 h-0.5 bg-amber-700 mx-auto" />
+          <div className="w-20 h-0.5 bg-gray-900 mx-auto" />
         </div>
 
         {/* Body section */}
         <div className="flex-1 flex flex-col items-center justify-center text-center space-y-3 py-6">
-          <p className="text-[9px] italic text-amber-800">Presented to</p>
+          <p className="text-[9px] italic text-gray-800">Presented to</p>
           
-          <h2 className="text-2xl font-serif font-bold text-amber-900">
+          <h2 className="text-2xl font-serif font-bold text-gray-900">
             {data.recipientName || 'Recipient Name'}
           </h2>
 
@@ -234,7 +234,7 @@ function PremiumTemplate({ data }: { data: any }) {
           </p>
 
           {data.grade && (
-            <p className="text-[9px] italic text-amber-800 mt-2">
+            <p className="text-[9px] italic text-gray-800 mt-2">
               With {data.grade} distinction
             </p>
           )}
@@ -245,17 +245,17 @@ function PremiumTemplate({ data }: { data: any }) {
         </div>
 
         {/* Footer section */}
-        <div className="border-t border-amber-700 pt-3">
+        <div className="border-t border-gray-900 pt-3">
           <div className="flex justify-center">
             <div className="text-center">
               {data.signatureUrl && data.signatureUrl !== '' && (
                 <img src={data.signatureUrl} alt="Signature" className="w-16 h-8 object-contain mx-auto mb-0.5" />
               )}
-              <div className="w-20 h-px bg-amber-900 mx-auto mb-0.5" />
-              <p className="text-[8px] font-bold text-amber-900">
+              <div className="w-20 h-px bg-gray-900 mx-auto mb-0.5" />
+              <p className="text-[8px] font-bold text-gray-900">
                 {data.instructorName || data.issuerName || 'Authorized Signatory'}
               </p>
-              <p className="text-[7px] text-amber-700">Authorized Signatory</p>
+              <p className="text-[7px] text-gray-700">Authorized Signatory</p>
             </div>
           </div>
         </div>

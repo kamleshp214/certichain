@@ -122,7 +122,7 @@ export function QRScanner({ onScan, onClose }: QRScannerProps) {
                   duration: 1.5,
                   repeat: Infinity,
                 }}
-                className="w-64 h-64 border-4 border-blue-500 rounded-2xl"
+                className="w-64 h-64 border-4 border-white rounded-2xl"
               />
             </div>
 
