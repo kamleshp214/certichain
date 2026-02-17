@@ -29,9 +29,11 @@ export function CertificatePreview() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
       className="w-full bg-white rounded-lg shadow-2xl overflow-hidden border-2 border-gray-700"
-      style={{ aspectRatio: '842/595' }}
+      style={{ aspectRatio: '842/595', maxHeight: '70vh' }}
     >
-      {renderTemplate()}
+      <div className="w-full h-full overflow-auto">
+        {renderTemplate()}
+      </div>
     </motion.div>
   );
 }

@@ -41,10 +41,7 @@ export function StatCard({ title, value, icon: Icon, color, delay = 0 }: StatCar
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       className="group"
     >
-      <div className="relative bg-gradient-to-br from-white/[0.08] to-white/[0.03] backdrop-blur-sm border border-white/10 rounded-2xl p-5 md:p-6 hover:border-white/20 hover:from-white/[0.12] hover:to-white/[0.05] transition-all duration-300 overflow-hidden">
-        {/* Subtle animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/5 group-hover:via-purple-500/5 group-hover:to-pink-500/5 transition-all duration-500" />
-        
+      <div className="relative bg-white/[0.03] backdrop-blur-sm border border-white/10 rounded-2xl p-5 md:p-6 hover:border-white/20 hover:bg-white/[0.05] transition-all duration-300 overflow-hidden">
         <div className="relative">
           <div className="flex items-start justify-between mb-4 md:mb-6">
             <motion.div
@@ -74,7 +71,7 @@ export function StatCard({ title, value, icon: Icon, color, delay = 0 }: StatCar
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: delay + 0.4, duration: 0.6 }}
-          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500/40 via-purple-500/40 to-pink-500/40 origin-left"
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/20 origin-left"
         />
       </div>
     </motion.div>

@@ -107,6 +107,7 @@ export default function CreateCertificate() {
       const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
       setPdfBlob(blob);
       setIssuedCertId(certId);
+      setIsIssuing(false); // Mark issuing as complete
 
     } catch (error) {
       console.error('Error issuing certificate:', error);
@@ -165,7 +166,7 @@ export default function CreateCertificate() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+            className="space-y-6"
           >
             {/* Form */}
             <motion.div
@@ -173,25 +174,60 @@ export default function CreateCertificate() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="sticky top-8">
-                <CertificateForm onSubmit={handleSubmit} disabled={isIssuing} />
+              <CertificateForm onSubmit={handleSubmit} disabled={isIssuing} />
+            </motion.div>
+
+            {/* Preview - Mobile: Show as expandable section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="lg:hidden"
+            >
+              <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden">
+                <details className="group">
+                  <summary className="cursor-pointer list-none p-4 hover:bg-gray-800 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-white">Preview Certificate</p>
+                        <p className="text-xs text-gray-400 mt-1">Tap to view live preview</p>
+                      </div>
+                      <svg
+                        className="w-5 h-5 text-gray-400 transition-transform group-open:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+                  </summary>
+                  <div className="p-4 pt-0 border-t border-gray-700">
+                    <div className="mt-4">
+                      <CertificatePreview />
+                    </div>
+                  </div>
+                </details>
               </div>
             </motion.div>
 
-            {/* Preview */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="hidden lg:block"
-            >
-              <div className="sticky top-8">
-                <div className="mb-4">
-                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Live Preview</p>
-                </div>
-                <CertificatePreview />
+            {/* Preview - Desktop: Side by side */}
+            <div className="hidden lg:block">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div></div>
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="sticky top-8"
+                >
+                  <div className="mb-4">
+                    <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Live Preview</p>
+                  </div>
+                  <CertificatePreview />
+                </motion.div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
 

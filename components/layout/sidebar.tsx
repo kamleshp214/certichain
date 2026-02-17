@@ -27,7 +27,7 @@ export function Navigation() {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="hidden lg:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-1 px-2 py-2 bg-gray-900 border border-gray-700 rounded-full shadow-lg"
+        className="hidden lg:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-1 px-2 py-2 bg-gray-900 border border-gray-700 rounded-full shadow-lg backdrop-blur-sm"
       >
         <Link href="/" className="px-4 py-2 flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Shield className="w-5 h-5 text-white" />
@@ -74,9 +74,9 @@ export function Navigation() {
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 safe-area-inset-bottom"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700"
       >
-        <div className="flex items-center justify-around px-2 py-3">
+        <div className="flex items-center justify-around px-2 py-2 safe-area-pb">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -85,33 +85,34 @@ export function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative flex flex-col items-center gap-1 px-6 py-2 min-w-[64px]"
+                className="relative flex flex-col items-center gap-1 px-3 py-2 min-w-[60px] flex-1"
               >
                 <motion.div
                   animate={{
-                    scale: isActive ? 1 : 0.9,
+                    scale: isActive ? 1.1 : 1,
                     y: isActive ? -2 : 0,
                   }}
                   transition={{ type: 'spring', damping: 20 }}
+                  className="relative"
                 >
                   <Icon className={cn(
-                    'w-6 h-6 transition-colors',
+                    'w-5 h-5 transition-colors',
                     isActive ? 'text-white' : 'text-gray-500'
                   )} />
+                  {isActive && (
+                    <motion.div
+                      layoutId="mobile-nav-indicator"
+                      className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-1 h-1 bg-white rounded-full"
+                      transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                    />
+                  )}
                 </motion.div>
                 <span className={cn(
-                  'text-xs font-medium transition-colors',
+                  'text-[10px] font-medium transition-colors',
                   isActive ? 'text-white' : 'text-gray-500'
                 )}>
                   {item.label}
                 </span>
-                {isActive && (
-                  <motion.div
-                    layoutId="mobile-nav-indicator"
-                    className="absolute -top-px left-1/2 -translate-x-1/2 w-12 h-1 bg-white rounded-full"
-                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                  />
-                )}
               </Link>
             );
           })}
