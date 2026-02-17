@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { Certificate } from '@/types/certificate';
 import { Card, CardContent } from '@/components/ui/card';
