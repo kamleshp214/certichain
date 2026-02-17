@@ -15,6 +15,8 @@ export interface Certificate {
   hash: string;
   txHash?: string;
   isRevoked: boolean;
+  revokedAt?: number;
+  revokedBy?: string;
   createdAt: number;
   logoUrl?: string;
   signatureUrl?: string;

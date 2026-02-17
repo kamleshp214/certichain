@@ -8,9 +8,8 @@ import { Certificate } from '@/types/certificate';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Search, Download, Ban, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Download, Ban, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
 import { generateCertificatePDF } from '@/lib/pdf-generator';
-import { revokeCertificateOnChain } from '@/lib/blockchain';
 import { EmptyState } from '@/components/dashboard/empty-state';
 
 export default function IssuedCertificates() {
@@ -102,16 +101,42 @@ export default function IssuedCertificates() {
     }
 
     try {
-      await revokeCertificateOnChain(cert.certificateId);
-      
+      // Update Firebase database only (no blockchain transaction needed)
       const certRef = doc(db, 'certificates', cert.id);
-      await updateDoc(certRef, { isRevoked: true });
+      await updateDoc(certRef, { 
+        isRevoked: true,
+        revokedAt: Date.now(),
+        revokedBy: 'admin' // You can add user authentication later
+      });
       
       loadCertificates();
       alert('Certificate revoked successfully');
     } catch (error) {
       console.error('Error revoking certificate:', error);
       alert('Failed to revoke certificate');
+    }
+  };
+
+  const handleRestore = async (cert: Certificate) => {
+    if (!confirm(`Are you sure you want to restore the certificate for ${cert.recipientName}?`)) {
+      return;
+    }
+
+    try {
+      const certRef = doc(db, 'certificates', cert.id);
+      await updateDoc(certRef, { 
+        isRevoked: false,
+        revokedAt: null,
+        revokedBy: null,
+        restoredAt: Date.now(),
+        restoredBy: 'admin'
+      });
+      
+      loadCertificates();
+      alert('Certificate restored successfully');
+    } catch (error) {
+      console.error('Error restoring certificate:', error);
+      alert('Failed to restore certificate');
     }
   };
 
@@ -197,6 +222,11 @@ export default function IssuedCertificates() {
                           <div>
                             <p className="font-medium text-white">{cert.recipientName}</p>
                             <p className="text-xs text-gray-400 font-mono">{cert.certificateId}</p>
+                            {cert.isRevoked && cert.revokedAt && (
+                              <p className="text-xs text-red-400 mt-1">
+                                Revoked: {new Date(cert.revokedAt).toLocaleDateString()}
+                              </p>
+                            )}
                           </div>
                         </td>
                         <td className="p-4 text-gray-300 text-sm">{cert.courseName}</td>
@@ -229,17 +259,29 @@ export default function IssuedCertificates() {
                               variant="ghost"
                               onClick={() => handleDownload(cert)}
                               className="text-gray-400 hover:text-white transition-smooth"
+                              title="Download Certificate"
                             >
                               <Download className="w-4 h-4" />
                             </Button>
-                            {!cert.isRevoked && (
+                            {!cert.isRevoked ? (
                               <Button
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleRevoke(cert)}
-                                className="text-gray-400 hover:text-white transition-smooth"
+                                className="text-gray-400 hover:text-red-400 transition-smooth"
+                                title="Revoke Certificate"
                               >
                                 <Ban className="w-4 h-4" />
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => handleRestore(cert)}
+                                className="text-gray-400 hover:text-green-400 transition-smooth"
+                                title="Restore Certificate"
+                              >
+                                <RotateCcw className="w-4 h-4" />
                               </Button>
                             )}
                           </div>
@@ -271,6 +313,11 @@ export default function IssuedCertificates() {
                       <p className="font-medium text-white">{cert.recipientName}</p>
                       <p className="text-sm text-gray-300">{cert.courseName}</p>
                       <p className="text-xs text-gray-400 font-mono mt-1">{cert.certificateId}</p>
+                      {cert.isRevoked && cert.revokedAt && (
+                        <p className="text-xs text-red-400 mt-1">
+                          Revoked: {new Date(cert.revokedAt).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                     
                     <div className="flex items-center justify-between">
@@ -306,7 +353,7 @@ export default function IssuedCertificates() {
                         <Download className="w-4 h-4" />
                         Download
                       </Button>
-                      {!cert.isRevoked && (
+                      {!cert.isRevoked ? (
                         <Button
                           size="sm"
                           variant="outline"
@@ -315,6 +362,16 @@ export default function IssuedCertificates() {
                         >
                           <Ban className="w-4 h-4" />
                           Revoke
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleRestore(cert)}
+                          className="flex-1 gap-2 bg-gray-800 border-2 border-gray-700 hover:bg-gray-700 text-white transition-smooth"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          Restore
                         </Button>
                       )}
                     </div>

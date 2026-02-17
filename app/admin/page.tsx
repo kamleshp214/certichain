@@ -120,24 +120,28 @@ export default function AdminDashboard() {
           value={stats.totalIssued}
           icon={FileText}
           color="bg-white"
+          delay={0}
         />
         <StatCard
           title="Active Certificates"
           value={stats.activeOnChain}
           icon={CheckCircle}
-          color="bg-gray-700"
+          color="bg-white"
+          delay={0.1}
         />
         <StatCard
           title="Revoked"
           value={stats.revokedCount}
           icon={XCircle}
-          color="bg-gray-600"
+          color="bg-white"
+          delay={0.2}
         />
         <StatCard
           title="Growth"
           value={stats.totalIssued}
           icon={TrendingUp}
-          color="bg-gray-800"
+          color="bg-white"
+          delay={0.3}
         />
       </motion.div>
 
