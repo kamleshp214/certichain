@@ -27,14 +27,14 @@ export function Navigation() {
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="hidden lg:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-1 px-2 py-2 bg-gray-900/80 backdrop-blur-xl border border-gray-800/50 rounded-full shadow-2xl"
+        className="hidden lg:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-1 px-2 py-2 bg-gray-900 border border-gray-700 rounded-full shadow-lg"
       >
         <Link href="/admin" className="px-4 py-2 flex items-center gap-2">
-          <Shield className="w-5 h-5 text-blue-400" />
+          <Shield className="w-5 h-5 text-white" />
           <span className="font-bold text-white">CertiChain</span>
         </Link>
         
-        <div className="w-px h-6 bg-gray-800 mx-2" />
+        <div className="w-px h-6 bg-gray-700 mx-2" />
         
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -50,7 +50,7 @@ export function Navigation() {
                 {isActive && (
                   <motion.div
                     layoutId="nav-pill"
-                    className="absolute inset-0 bg-blue-600 rounded-full"
+                    className="absolute inset-0 bg-white rounded-full"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
@@ -60,7 +60,7 @@ export function Navigation() {
               </AnimatePresence>
               <span className={cn(
                 'relative z-10 text-sm font-medium transition-colors flex items-center gap-2',
-                isActive ? 'text-white' : 'text-gray-400 hover:text-white'
+                isActive ? 'text-black' : 'text-gray-300 hover:text-white'
               )}>
                 <Icon className="w-4 h-4" />
                 {item.label}
@@ -74,7 +74,7 @@ export function Navigation() {
       <motion.nav
         initial={{ y: 100 }}
         animate={{ y: 0 }}
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-950/95 backdrop-blur-xl border-t border-gray-800/50 safe-area-inset-bottom"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-gray-900 border-t border-gray-700 safe-area-inset-bottom"
       >
         <div className="flex items-center justify-around px-2 py-3">
           {navItems.map((item) => {
@@ -96,7 +96,7 @@ export function Navigation() {
                 >
                   <Icon className={cn(
                     'w-6 h-6 transition-colors',
-                    isActive ? 'text-blue-400' : 'text-gray-500'
+                    isActive ? 'text-white' : 'text-gray-500'
                   )} />
                 </motion.div>
                 <span className={cn(
@@ -108,7 +108,7 @@ export function Navigation() {
                 {isActive && (
                   <motion.div
                     layoutId="mobile-nav-indicator"
-                    className="absolute -top-px left-1/2 -translate-x-1/2 w-12 h-1 bg-blue-500 rounded-full"
+                    className="absolute -top-px left-1/2 -translate-x-1/2 w-12 h-1 bg-white rounded-full"
                     transition={{ type: 'spring', damping: 25, stiffness: 300 }}
                   />
                 )}

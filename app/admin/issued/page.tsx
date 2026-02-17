@@ -59,18 +59,31 @@ export default function IssuedCertificates() {
 
   const handleDownload = async (cert: Certificate) => {
     try {
+      console.log('Downloading certificate:', cert);
+      
       const pdfBytes = await generateCertificatePDF({
         certificateId: cert.certificateId,
         recipientName: cert.recipientName,
         courseName: cert.courseName,
         issueDate: cert.issueDate,
         issuerName: cert.issuerName,
-        template: cert.template,
-        logoUrl: cert.logoUrl,
-        signatureUrl: cert.signatureUrl,
+        institutionName: cert.institutionName,
+        instructorName: cert.instructorName || '',
+        expiryDate: cert.expiryDate || '',
+        durationFrom: cert.durationFrom || '',
+        durationTo: cert.durationTo || '',
+        grade: cert.grade || '',
+        template: cert.template || 'academic',
+        logoUrl: cert.logoUrl || '',
+        signatureUrl: cert.signatureUrl || '',
+        qrPosition: cert.qrPosition || 'bottom-right',
+        logoPosition: cert.logoPosition || 'top-center',
+        signaturePosition: cert.signaturePosition || 'bottom-center',
       });
 
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      console.log('PDF generated, size:', pdfBytes.length);
+
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -79,7 +92,7 @@ export default function IssuedCertificates() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading certificate:', error);
-      alert('Failed to download certificate');
+      alert(`Failed to download certificate: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
@@ -106,7 +119,7 @@ export default function IssuedCertificates() {
     return (
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <div key={i} className="h-24 bg-gray-900 rounded-xl animate-pulse" />
+          <div key={i} className="h-24 bg-gray-800 rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -114,46 +127,59 @@ export default function IssuedCertificates() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Issued Certificates</h1>
-        <p className="text-gray-400">Manage all issued certificates</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h1 className="text-white">Issued Certificates</h1>
+        <p className="text-gray-300 text-lg">Manage all issued certificates</p>
+      </motion.div>
 
       {certificates.length === 0 ? (
         <EmptyState />
       ) : (
         <>
-          <div className="flex items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex items-center gap-4"
+          >
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
                 placeholder="Search by name, course, or ID..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-gray-800 border-2 border-gray-700 text-white placeholder:text-gray-500 focus:border-gray-600 transition-smooth"
               />
             </div>
-          </div>
+          </motion.div>
 
-          <div className="hidden md:block">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="hidden md:block"
+          >
             <Card>
               <CardContent className="p-0">
                 <table className="w-full">
-                  <thead className="border-b border-gray-800">
+                  <thead className="border-b-2 border-gray-700 bg-gray-800">
                     <tr>
-                      <th className="text-left p-4 text-sm font-medium text-gray-400">
+                      <th className="text-left p-4 text-xs font-bold text-white uppercase tracking-wide">
                         Recipient
                       </th>
-                      <th className="text-left p-4 text-sm font-medium text-gray-400">
+                      <th className="text-left p-4 text-xs font-bold text-white uppercase tracking-wide">
                         Course
                       </th>
-                      <th className="text-left p-4 text-sm font-medium text-gray-400">
+                      <th className="text-left p-4 text-xs font-bold text-white uppercase tracking-wide">
                         Issue Date
                       </th>
-                      <th className="text-left p-4 text-sm font-medium text-gray-400">
+                      <th className="text-left p-4 text-xs font-bold text-white uppercase tracking-wide">
                         Status
                       </th>
-                      <th className="text-right p-4 text-sm font-medium text-gray-400">
+                      <th className="text-right p-4 text-xs font-bold text-white uppercase tracking-wide">
                         Actions
                       </th>
                     </tr>
@@ -164,23 +190,23 @@ export default function IssuedCertificates() {
                         key={cert.id}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="border-b border-gray-800 hover:bg-gray-800/50"
+                        transition={{ delay: 0.3 + index * 0.05 }}
+                        className="border-b border-gray-700 hover:bg-gray-800 transition-smooth"
                       >
                         <td className="p-4">
                           <div>
                             <p className="font-medium text-white">{cert.recipientName}</p>
-                            <p className="text-sm text-gray-500 font-mono">{cert.certificateId}</p>
+                            <p className="text-xs text-gray-400 font-mono">{cert.certificateId}</p>
                           </div>
                         </td>
-                        <td className="p-4 text-gray-300">{cert.courseName}</td>
-                        <td className="p-4 text-gray-300">{cert.issueDate}</td>
+                        <td className="p-4 text-gray-300 text-sm">{cert.courseName}</td>
+                        <td className="p-4 text-gray-300 text-sm">{cert.issueDate}</td>
                         <td className="p-4">
                           <span
-                            className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${
+                            className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full font-medium ${
                               cert.isRevoked
-                                ? 'bg-red-500/20 text-red-400'
-                                : 'bg-green-500/20 text-green-400'
+                                ? 'bg-gray-700 text-gray-300 border border-gray-600'
+                                : 'bg-white text-black border border-white'
                             }`}
                           >
                             {cert.isRevoked ? (
@@ -202,6 +228,7 @@ export default function IssuedCertificates() {
                               size="sm"
                               variant="ghost"
                               onClick={() => handleDownload(cert)}
+                              className="text-gray-400 hover:text-white transition-smooth"
                             >
                               <Download className="w-4 h-4" />
                             </Button>
@@ -210,6 +237,7 @@ export default function IssuedCertificates() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => handleRevoke(cert)}
+                                className="text-gray-400 hover:text-white transition-smooth"
                               >
                                 <Ban className="w-4 h-4" />
                               </Button>
@@ -222,31 +250,36 @@ export default function IssuedCertificates() {
                 </table>
               </CardContent>
             </Card>
-          </div>
+          </motion.div>
 
-          <div className="md:hidden space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="md:hidden space-y-4"
+          >
             {filteredCerts.map((cert, index) => (
               <motion.div
                 key={cert.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: 0.3 + index * 0.05 }}
               >
                 <Card>
                   <CardContent className="p-4 space-y-3">
                     <div>
                       <p className="font-medium text-white">{cert.recipientName}</p>
-                      <p className="text-sm text-gray-400">{cert.courseName}</p>
-                      <p className="text-xs text-gray-500 font-mono mt-1">{cert.certificateId}</p>
+                      <p className="text-sm text-gray-300">{cert.courseName}</p>
+                      <p className="text-xs text-gray-400 font-mono mt-1">{cert.certificateId}</p>
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-gray-400">{cert.issueDate}</span>
+                      <span className="text-sm text-gray-300">{cert.issueDate}</span>
                       <span
-                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${
+                        className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full font-medium ${
                           cert.isRevoked
-                            ? 'bg-red-500/20 text-red-400'
-                            : 'bg-green-500/20 text-green-400'
+                            ? 'bg-gray-700 text-gray-300 border border-gray-600'
+                            : 'bg-white text-black border border-white'
                         }`}
                       >
                         {cert.isRevoked ? (
@@ -268,7 +301,7 @@ export default function IssuedCertificates() {
                         size="sm"
                         variant="outline"
                         onClick={() => handleDownload(cert)}
-                        className="flex-1 gap-2"
+                        className="flex-1 gap-2 bg-gray-800 border-2 border-gray-700 hover:bg-gray-700 text-white transition-smooth"
                       >
                         <Download className="w-4 h-4" />
                         Download
@@ -276,9 +309,9 @@ export default function IssuedCertificates() {
                       {!cert.isRevoked && (
                         <Button
                           size="sm"
-                          variant="destructive"
+                          variant="outline"
                           onClick={() => handleRevoke(cert)}
-                          className="flex-1 gap-2"
+                          className="flex-1 gap-2 bg-gray-800 border-2 border-gray-700 hover:bg-gray-700 text-white transition-smooth"
                         >
                           <Ban className="w-4 h-4" />
                           Revoke
@@ -289,7 +322,7 @@ export default function IssuedCertificates() {
                 </Card>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </>
       )}
     </div>

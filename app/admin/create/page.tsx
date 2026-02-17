@@ -9,7 +9,7 @@ import { useCertificateStore } from '@/store/certificate-store';
 import { generateCertificateId, generateCertificateHash } from '@/lib/hash';
 import { generateCertificatePDF } from '@/lib/pdf-generator';
 import { issueCertificateOnChain } from '@/lib/blockchain';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
@@ -28,20 +28,20 @@ export default function CreateCertificate() {
     setIssuingStep(1);
 
     try {
-      const certificateId = generateCertificateId();
+      const certId = generateCertificateId();
       
       const certData = {
-        certificateId,
+        certificateId: certId,
         recipientName: data.recipientName,
         courseName: data.courseName,
         institutionName: data.institutionName,
         issuerName: data.issuerName,
-        instructorName: data.instructorName,
+        instructorName: data.instructorName || '',
         issueDate: data.issueDate,
-        expiryDate: data.expiryDate,
-        durationFrom: data.durationFrom,
-        durationTo: data.durationTo,
-        grade: data.grade,
+        expiryDate: data.expiryDate || '',
+        durationFrom: data.durationFrom || '',
+        durationTo: data.durationTo || '',
+        grade: data.grade || '',
       };
 
       const hash = await generateCertificateHash(certData);
@@ -53,13 +53,13 @@ export default function CreateCertificate() {
       let signatureUrl = formData.signatureUrl;
 
       if (formData.logoFile) {
-        const logoRef = ref(storage, `logos/${certificateId}`);
+        const logoRef = ref(storage, `logos/${certId}`);
         await uploadBytes(logoRef, formData.logoFile);
         logoUrl = await getDownloadURL(logoRef);
       }
 
       if (formData.signatureFile) {
-        const sigRef = ref(storage, `signatures/${certificateId}`);
+        const sigRef = ref(storage, `signatures/${certId}`);
         await uploadBytes(sigRef, formData.signatureFile);
         signatureUrl = await getDownloadURL(sigRef);
       }
@@ -68,35 +68,31 @@ export default function CreateCertificate() {
       setIssuingStep(3);
 
       const certificate = {
-        certificateId,
         ...certData,
         template: data.template,
         hash,
         isRevoked: false,
         createdAt: Date.now(),
-        logoUrl,
-        signatureUrl,
-        qrPosition: data.qrPosition,
-        logoPosition: data.logoPosition,
-        signaturePosition: data.signaturePosition,
+        logoUrl: logoUrl || '',
+        signatureUrl: signatureUrl || '',
+        qrPosition: data.qrPosition || 'bottom-right',
+        logoPosition: data.logoPosition || 'top-center',
+        signaturePosition: data.signaturePosition || 'bottom-center',
       };
 
-      await addDoc(collection(db, 'certificates'), certificate);
+      const docRef = await addDoc(collection(db, 'certificates'), certificate);
 
       await new Promise(resolve => setTimeout(resolve, 1000));
       setIssuingStep(4);
 
       try {
-        const txHash = await issueCertificateOnChain(certificateId, hash);
-        await addDoc(collection(db, 'certificates'), {
-          ...certificate,
+        const txHash = await issueCertificateOnChain(certId, hash);
+        await updateDoc(docRef, {
           txHash,
         });
       } catch (error) {
         console.error('Blockchain error:', error);
       }
-
-      setIssuingStep(5);
 
       const pdfBytes = await generateCertificatePDF({
         ...certData,
@@ -108,9 +104,9 @@ export default function CreateCertificate() {
         signaturePosition: data.signaturePosition,
       });
 
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blob = new Blob([new Uint8Array(pdfBytes)], { type: 'application/pdf' });
       setPdfBlob(blob);
-      setIssuedCertId(certificateId);
+      setIssuedCertId(certId);
 
     } catch (error) {
       console.error('Error issuing certificate:', error);
@@ -144,27 +140,22 @@ export default function CreateCertificate() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative"
+        className="space-y-3"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-3xl" />
-        <div className="relative">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-4"
-          >
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-sm text-blue-400 font-medium">Certificate Builder</span>
-          </motion.div>
-          
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Create Certificate
-          </h1>
-          <p className="text-xl text-gray-400 max-w-2xl">
-            Issue blockchain-verified certificates with live preview
-          </p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.1 }}
+          className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-white rounded-full"
+        >
+          <Sparkles className="w-3 h-3 text-black" />
+          <span className="text-xs text-black font-medium uppercase tracking-wide">Certificate Builder</span>
+        </motion.div>
+        
+        <h1 className="text-white">Create Certificate</h1>
+        <p className="text-gray-300 text-lg">
+          Issue blockchain-verified certificates with live preview
+        </p>
       </motion.div>
 
       <AnimatePresence mode="wait">
@@ -196,7 +187,7 @@ export default function CreateCertificate() {
             >
               <div className="sticky top-8">
                 <div className="mb-4">
-                  <p className="text-sm text-gray-500 font-medium">Live Preview</p>
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Live Preview</p>
                 </div>
                 <CertificatePreview />
               </div>
@@ -212,14 +203,11 @@ export default function CreateCertificate() {
             exit={{ opacity: 0, scale: 0.95 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl" />
-              <div className="relative bg-gray-900/50 backdrop-blur-xl border border-gray-800/50 rounded-3xl p-8 md:p-12">
-                <h2 className="text-2xl font-bold text-white mb-8 text-center">
-                  Issuing Certificate
-                </h2>
-                <IssuingProgress currentStep={issuingStep} />
-              </div>
+            <div className="bg-gray-900 border-2 border-gray-700 rounded-2xl p-8 md:p-12">
+              <h2 className="text-2xl font-semibold text-white mb-8 text-center">
+                Issuing Certificate
+              </h2>
+              <IssuingProgress currentStep={issuingStep} />
             </div>
           </motion.div>
         )}
@@ -231,95 +219,80 @@ export default function CreateCertificate() {
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-2xl mx-auto"
           >
-            <div className="relative">
+            <div className="bg-gray-900 border-2 border-gray-700 rounded-2xl p-8 md:p-12 text-center space-y-8">
               <motion.div
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 0.8, 0.5],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Infinity,
-                  ease: 'easeInOut',
-                }}
-                className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-emerald-500/20 blur-3xl"
-              />
-              
-              <div className="relative bg-gray-900/50 backdrop-blur-xl border border-gray-800/50 rounded-3xl p-8 md:p-12 text-center space-y-8">
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', damping: 15, delay: 0.2 }}
-                  className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-emerald-600"
-                >
-                  <CheckCircle className="w-12 h-12 text-white" />
-                </motion.div>
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', damping: 15, delay: 0.2 }}
+                className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white mx-auto"
+              >
+                <CheckCircle className="w-10 h-10 text-black" />
+              </motion.div>
 
-                <div>
-                  <motion.h2
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-3xl font-bold text-white mb-3"
-                  >
-                    Certificate Issued Successfully!
-                  </motion.h2>
-                  <motion.p
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-gray-400 text-lg"
-                  >
-                    Your certificate has been recorded on the blockchain
-                  </motion.p>
-                </div>
-
-                <motion.div
+              <div>
+                <motion.h2
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="bg-gray-800/50 rounded-2xl p-6"
+                  transition={{ delay: 0.3 }}
+                  className="text-2xl font-semibold text-white mb-2"
                 >
-                  <p className="text-sm text-gray-500 mb-2 font-medium">Certificate ID</p>
-                  <p className="font-mono text-white text-lg">{issuedCertId}</p>
-                </motion.div>
-
-                <motion.div
+                  Certificate Issued Successfully
+                </motion.h2>
+                <motion.p
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="flex flex-col gap-3"
+                  transition={{ delay: 0.4 }}
+                  className="text-gray-300"
                 >
-                  <Button 
-                    onClick={handleDownload} 
-                    size="lg" 
-                    className="gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 border-0 shadow-lg shadow-blue-500/25"
-                  >
-                    <Download className="w-5 h-5" />
-                    Download PDF Certificate
-                  </Button>
-                  
-                  <Button
-                    onClick={handleCreateAnother}
-                    variant="outline"
-                    size="lg"
-                    className="gap-2 bg-gray-900/50 border-gray-700 hover:bg-gray-800/50"
-                  >
-                    <Sparkles className="w-5 h-5" />
-                    Create Another Certificate
-                  </Button>
-                  
-                  <Button
-                    onClick={() => router.push('/admin/issued')}
-                    variant="ghost"
-                    size="lg"
-                    className="gap-2 group"
-                  >
-                    View All Certificates
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </motion.div>
+                  Your certificate has been recorded on the blockchain
+                </motion.p>
               </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="bg-gray-800 rounded-xl p-4 border border-gray-700"
+              >
+                <p className="text-xs text-gray-400 mb-2 font-medium uppercase tracking-wide">Certificate ID</p>
+                <p className="font-mono text-white text-sm">{issuedCertId}</p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="flex flex-col gap-3"
+              >
+                <Button 
+                  onClick={handleDownload} 
+                  size="lg" 
+                  className="gap-2 bg-white hover:bg-gray-200 text-black border-0 transition-smooth"
+                >
+                  <Download className="w-5 h-5" />
+                  Download PDF Certificate
+                </Button>
+                
+                <Button
+                  onClick={handleCreateAnother}
+                  variant="outline"
+                  size="lg"
+                  className="gap-2 bg-gray-800 border-2 border-gray-700 hover:bg-gray-700 text-white transition-smooth"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Create Another Certificate
+                </Button>
+                
+                <Button
+                  onClick={() => router.push('/admin/issued')}
+                  variant="ghost"
+                  size="lg"
+                  className="gap-2 text-gray-300 hover:text-white transition-smooth"
+                >
+                  View All Certificates
+                  <ArrowRight className="w-5 h-5" />
+                </Button>
+              </motion.div>
             </div>
           </motion.div>
         )}

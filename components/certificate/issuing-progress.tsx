@@ -44,10 +44,10 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                   }}
                   className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${
                     isComplete
-                      ? 'bg-green-600 border-green-600'
+                      ? 'bg-white border-white'
                       : isCurrent
-                      ? 'bg-blue-600 border-blue-600'
-                      : 'border-gray-700 bg-gray-900'
+                      ? 'bg-gray-700 border-gray-700'
+                      : 'border-gray-600 bg-gray-900'
                   }`}
                 >
                   {isComplete ? (
@@ -56,7 +56,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                       animate={{ scale: 1, rotate: 0 }}
                       transition={{ type: 'spring', damping: 15 }}
                     >
-                      <Check className="w-6 h-6 text-white" />
+                      <Check className="w-6 h-6 text-black" />
                     </motion.div>
                   ) : isCurrent ? (
                     <Loader2 className="w-6 h-6 text-white animate-spin" />
@@ -67,7 +67,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
 
                 {/* Connecting Line */}
                 {index < steps.length - 1 && (
-                  <div className="absolute left-6 top-12 w-px h-12 bg-gray-800">
+                  <div className="absolute left-6 top-12 w-px h-12 bg-gray-700">
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{
@@ -75,7 +75,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                       }}
                       transition={{ duration: 0.5 }}
                       className={`w-full ${
-                        isComplete ? 'bg-green-600' : 'bg-blue-600'
+                        isComplete ? 'bg-white' : 'bg-gray-700'
                       }`}
                     />
                   </div>
@@ -86,7 +86,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
               <div className="flex-1 pt-2">
                 <motion.p
                   animate={{
-                    color: isComplete || isCurrent ? '#ffffff' : '#6b7280',
+                    color: isComplete || isCurrent ? '#ffffff' : '#9ca3af',
                   }}
                   className="font-semibold text-lg mb-1"
                 >
@@ -94,7 +94,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                 </motion.p>
                 <motion.p
                   animate={{
-                    color: isComplete || isCurrent ? '#9ca3af' : '#4b5563',
+                    color: isComplete || isCurrent ? '#d1d5db' : '#6b7280',
                   }}
                   className="text-sm"
                 >
@@ -107,7 +107,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="px-3 py-1 bg-green-500/10 border border-green-500/20 rounded-full text-xs font-medium text-green-400"
+                  className="px-3 py-1 bg-white border border-white rounded-full text-xs font-medium text-black"
                 >
                   Complete
                 </motion.div>
@@ -121,7 +121,7 @@ export function IssuingProgress({ currentStep }: IssuingProgressProps) {
                     duration: 1.5,
                     repeat: Infinity,
                   }}
-                  className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-xs font-medium text-blue-400"
+                  className="px-3 py-1 bg-gray-700 border border-gray-700 rounded-full text-xs font-medium text-white"
                 >
                   Processing
                 </motion.div>

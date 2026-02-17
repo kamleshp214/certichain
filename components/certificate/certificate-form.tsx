@@ -403,7 +403,7 @@ export function CertificateForm({ onSubmit, disabled = false }: CertificateFormP
       <Button 
         type="submit" 
         size="lg" 
-        className="w-full bg-blue-600 hover:bg-blue-700"
+        className="w-full bg-white hover:bg-gray-200 text-black font-semibold"
         disabled={disabled}
       >
         {disabled ? 'Issuing Certificate...' : 'Issue Certificate'}

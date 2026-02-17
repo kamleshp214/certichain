@@ -114,7 +114,7 @@ export default function VerifyCertificatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-950 to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
       <div className="w-full max-w-4xl py-12">
         {loading ? (
           <motion.div
@@ -127,13 +127,13 @@ export default function VerifyCertificatePage() {
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               className="mb-6"
             >
-              <Loader2 className="w-16 h-16 text-blue-500" />
+              <Loader2 className="w-12 h-12 text-white" />
             </motion.div>
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-gray-400 text-xl mb-2"
+              className="text-gray-300 text-lg font-medium"
             >
               Verifying certificate...
             </motion.p>
@@ -141,7 +141,7 @@ export default function VerifyCertificatePage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-sm text-gray-500"
+              className="text-sm text-gray-400 mt-2"
             >
               Checking blockchain records
             </motion.p>

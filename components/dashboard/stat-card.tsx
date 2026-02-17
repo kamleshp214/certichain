@@ -8,11 +8,11 @@ interface StatCardProps {
   title: string;
   value: number;
   icon: LucideIcon;
-  gradient: string;
+  color: string;
   delay?: number;
 }
 
-export function StatCard({ title, value, icon: Icon, gradient, delay = 0 }: StatCardProps) {
+export function StatCard({ title, value, icon: Icon, color, delay = 0 }: StatCardProps) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -37,18 +37,14 @@ export function StatCard({ title, value, icon: Icon, gradient, delay = 0 }: Stat
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, type: 'spring', damping: 20 }}
-      whileHover={{ y: -4, transition: { duration: 0.2 } }}
-      className="group relative"
+      transition={{ delay, duration: 0.3 }}
+      whileHover={{ y: -2, transition: { duration: 0.2 } }}
+      className="group"
     >
-      <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl blur-xl"
-        style={{ background: gradient }}
-      />
-      
-      <div className="relative bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-2xl p-6 hover:border-gray-700/50 transition-all duration-300">
+      <div className="relative bg-gray-900 border border-gray-700 rounded-xl p-6 hover:border-gray-600 transition-smooth">
         <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 rounded-xl bg-gradient-to-br ${gradient}`}>
-            <Icon className="w-6 h-6 text-white" />
+          <div className={`p-2 rounded-lg ${color}`}>
+            <Icon className="w-5 h-5 text-black" />
           </div>
         </div>
         
@@ -56,12 +52,12 @@ export function StatCard({ title, value, icon: Icon, gradient, delay = 0 }: Stat
           key={displayValue}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl font-bold text-white mb-1 tabular-nums"
+          className="text-3xl font-bold text-white mb-1 tabular-nums"
         >
           {displayValue.toLocaleString()}
         </motion.div>
         
-        <p className="text-sm text-gray-400 font-medium">{title}</p>
+        <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{title}</p>
       </div>
     </motion.div>
   );

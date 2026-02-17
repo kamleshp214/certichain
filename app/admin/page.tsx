@@ -11,6 +11,26 @@ import { FileText, CheckCircle, XCircle, TrendingUp, Clock, ArrowRight } from 'l
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+};
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats>({
     totalIssued: 0,
@@ -68,7 +88,7 @@ export default function AdminDashboard() {
       <div className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-40 bg-gray-900/50 rounded-2xl animate-pulse" />
+            <div key={i} className="h-40 bg-gray-800 rounded-lg animate-pulse" />
           ))}
         </div>
       </div>
@@ -76,82 +96,62 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-12">
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative"
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 blur-3xl" />
-        <div className="relative">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4"
-          >
-            Certificate Dashboard
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-gray-400 max-w-2xl"
-          >
-            Manage and track your blockchain-verified certificates
-          </motion.p>
-        </div>
+    <motion.div
+      className="space-y-12"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Header */}
+      <motion.div variants={itemVariants} className="space-y-3">
+        <h1 className="text-white">Certificate Dashboard</h1>
+        <p className="text-gray-400 text-lg">
+          Manage and track your blockchain-verified certificates
+        </p>
       </motion.div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        variants={containerVariants}
+      >
         <StatCard
           title="Total Issued"
           value={stats.totalIssued}
           icon={FileText}
-          gradient="from-blue-500 to-blue-600"
-          delay={0.1}
+          color="bg-white"
         />
         <StatCard
           title="Active Certificates"
           value={stats.activeOnChain}
           icon={CheckCircle}
-          gradient="from-green-500 to-emerald-600"
-          delay={0.2}
+          color="bg-gray-700"
         />
         <StatCard
           title="Revoked"
           value={stats.revokedCount}
           icon={XCircle}
-          gradient="from-red-500 to-rose-600"
-          delay={0.3}
+          color="bg-gray-600"
         />
         <StatCard
           title="Growth"
           value={stats.totalIssued}
           icon={TrendingUp}
-          gradient="from-purple-500 to-pink-600"
-          delay={0.4}
+          color="bg-gray-800"
         />
-      </div>
+      </motion.div>
 
       {/* Recent Activity */}
       {recentCertificates.length === 0 ? (
         <EmptyState />
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="space-y-6"
-        >
+        <motion.div variants={itemVariants} className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-bold text-white">Recent Certificates</h2>
+            <h2 className="text-2xl font-semibold text-white">Recent Certificates</h2>
             <Link href="/admin/issued">
-              <Button variant="ghost" className="gap-2 group">
+              <Button variant="ghost" className="gap-2 group text-white hover:text-gray-300">
                 View All
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-smooth" />
               </Button>
             </Link>
           </div>
@@ -162,32 +162,30 @@ export default function AdminDashboard() {
                 key={cert.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + index * 0.1 }}
+                transition={{ delay: 0.5 + index * 0.08, duration: 0.3, ease: 'easeOut' }}
                 whileHover={{ x: 4, transition: { duration: 0.2 } }}
-                className="group relative"
+                className="group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
-                
-                <div className="relative flex items-center gap-4 p-6 bg-gray-900/30 backdrop-blur-sm border border-gray-800/50 rounded-2xl hover:border-gray-700/50 transition-all">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                    <FileText className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-4 p-4 bg-gray-900 border border-gray-700 rounded-lg hover:border-gray-600 transition-smooth">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-white flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-black" />
                   </div>
                   
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-white mb-1 truncate">{cert.recipientName}</p>
+                    <p className="font-medium text-white truncate">{cert.recipientName}</p>
                     <p className="text-sm text-gray-400 truncate">{cert.courseName}</p>
                   </div>
                   
                   <div className="flex items-center gap-4">
-                    <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+                    <div className="hidden sm:flex items-center gap-2 text-sm text-gray-400">
                       <Clock className="w-4 h-4" />
                       {cert.issueDate}
                     </div>
                     <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      className={`px-3 py-1 text-xs font-medium rounded-full transition-smooth ${
                         cert.isRevoked
-                          ? 'bg-red-500/10 text-red-400 border border-red-500/20'
-                          : 'bg-green-500/10 text-green-400 border border-green-500/20'
+                          ? 'bg-gray-700 text-gray-300 border border-gray-600'
+                          : 'bg-white text-black border border-white'
                       }`}
                     >
                       {cert.isRevoked ? 'Revoked' : 'Active'}
@@ -199,6 +197,6 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }
