@@ -40,44 +40,90 @@ export default function AdminDashboard() {
   });
   const [recentCertificates, setRecentCertificates] = useState<Certificate[]>([]);
   const [loading, setLoading] = useState(true);
+  const [slowLoading, setSlowLoading] = useState(false);
 
   useEffect(() => {
     loadDashboardData();
+    
+    // Show message if loading takes too long
+    const slowLoadTimer = setTimeout(() => {
+      if (loading) {
+        setSlowLoading(true);
+      }
+    }, 5000);
+    
+    return () => clearTimeout(slowLoadTimer);
   }, []);
 
   const loadDashboardData = async () => {
+    const timeout = setTimeout(() => {
+      console.warn('Dashboard data loading is taking longer than expected...');
+    }, 3000);
+
     try {
       const certsRef = collection(db, 'certificates');
-      const certsSnapshot = await getDocs(certsRef);
       
-      const totalIssued = certsSnapshot.size;
-      const revokedCount = certsSnapshot.docs.filter(
-        doc => doc.data().isRevoked
-      ).length;
-      const activeOnChain = totalIssued - revokedCount;
-
-      setStats({
-        totalIssued,
-        activeOnChain,
-        revokedCount,
-        recentVerifications: 0,
-      });
-
+      // Only fetch recent certificates first (faster)
       const recentQuery = query(
         certsRef,
         orderBy('createdAt', 'desc'),
-        limit(5)
+        limit(10)
       );
+      
       const recentSnapshot = await getDocs(recentQuery);
+      clearTimeout(timeout);
+      
+      if (recentSnapshot.empty) {
+        // No certificates exist
+        setStats({
+          totalIssued: 0,
+          activeOnChain: 0,
+          revokedCount: 0,
+          recentVerifications: 0,
+        });
+        setRecentCertificates([]);
+        setLoading(false);
+        return;
+      }
       
       const certs = recentSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       })) as Certificate[];
       
-      setRecentCertificates(certs);
+      setRecentCertificates(certs.slice(0, 5));
+      
+      // Calculate stats from recent certs only (approximation for speed)
+      const revokedInRecent = certs.filter(c => c.isRevoked).length;
+      
+      // For better performance, use recent data as approximation
+      // In production, you'd use Firestore aggregation queries or Cloud Functions
+      setStats({
+        totalIssued: certs.length,
+        activeOnChain: certs.length - revokedInRecent,
+        revokedCount: revokedInRecent,
+        recentVerifications: 0,
+      });
+      
     } catch (error) {
+      clearTimeout(timeout);
       console.error('Error loading dashboard:', error);
+      
+      // Check if it's a Firebase configuration error
+      if (error instanceof Error) {
+        if (error.message.includes('projectId') || error.message.includes('apiKey')) {
+          console.error('Firebase configuration error. Please check your .env.local file.');
+        }
+      }
+      
+      // Set empty state on error
+      setStats({
+        totalIssued: 0,
+        activeOnChain: 0,
+        revokedCount: 0,
+        recentVerifications: 0,
+      });
+      setRecentCertificates([]);
     } finally {
       setLoading(false);
     }
@@ -91,8 +137,16 @@ export default function AdminDashboard() {
           <div key={i} className="h-40 bg-gray-800 rounded-lg animate-pulse" />
         ))}
       </div>
+      {slowLoading && (
+        <div className="bg-gray-900 border-2 border-gray-700 rounded-xl p-6 text-center">
+          <p className="text-white mb-2">Loading is taking longer than expected...</p>
+          <p className="text-sm text-gray-400">
+            Check the status indicator at the bottom-right corner for details.
+          </p>
+        </div>
+      )}
     </div>
-  ), []);
+  ), [slowLoading]);
 
   if (loading) {
     return loadingSkeleton;

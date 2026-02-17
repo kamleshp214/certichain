@@ -36,20 +36,51 @@ export default function IssuedCertificates() {
   }, [searchTerm, certificates]);
 
   const loadCertificates = async () => {
+    const timeout = setTimeout(() => {
+      console.warn('Certificate loading is taking longer than expected. This might be due to Firestore indexing or network issues.');
+    }, 3000);
+
     try {
       const certsRef = collection(db, 'certificates');
-      const q = query(certsRef, orderBy('createdAt', 'desc'));
+      // Limit initial load to 50 most recent certificates for performance
+      const q = query(certsRef, orderBy('createdAt', 'desc'), limit(50));
+      
       const snapshot = await getDocs(q);
+      clearTimeout(timeout);
+      
+      if (snapshot.empty) {
+        console.log('No certificates found in database');
+        setCertificates([]);
+        setFilteredCerts([]);
+        setLoading(false);
+        return;
+      }
       
       const certs = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       })) as Certificate[];
       
+      console.log(`Loaded ${certs.length} certificates`);
       setCertificates(certs);
       setFilteredCerts(certs);
     } catch (error) {
+      clearTimeout(timeout);
       console.error('Error loading certificates:', error);
+      
+      // Check for specific Firebase errors
+      if (error instanceof Error) {
+        if (error.message.includes('index')) {
+          console.error('Firestore index required. Please create an index for the "certificates" collection ordered by "createdAt" descending.');
+          alert('Database index required. Please check the console for details.');
+        } else if (error.message.includes('permission')) {
+          console.error('Permission denied. Please check Firestore security rules.');
+          alert('Permission denied. Please check your Firebase configuration.');
+        }
+      }
+      
+      setCertificates([]);
+      setFilteredCerts([]);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { initializeApp, getApps } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -12,8 +12,26 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+// Validate Firebase config
+const isConfigValid = () => {
+  return firebaseConfig.apiKey && 
+         firebaseConfig.projectId && 
+         firebaseConfig.storageBucket;
+};
+
+if (!isConfigValid()) {
+  console.error('Firebase configuration is incomplete. Please check your environment variables.');
+}
+
 // Initialize Firebase only once
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+let app;
+try {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+} catch (error) {
+  console.error('Error initializing Firebase:', error);
+  // Initialize with config anyway for development
+  app = initializeApp(firebaseConfig);
+}
 
 // Export Firestore and Storage instances
 export const db = getFirestore(app);
