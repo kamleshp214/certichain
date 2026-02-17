@@ -29,7 +29,7 @@ export function Navigation() {
         animate={{ y: 0, opacity: 1 }}
         className="hidden lg:flex fixed top-6 left-1/2 -translate-x-1/2 z-50 items-center gap-1 px-2 py-2 bg-gray-900 border border-gray-700 rounded-full shadow-lg"
       >
-        <Link href="/admin" className="px-4 py-2 flex items-center gap-2">
+        <Link href="/" className="px-4 py-2 flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Shield className="w-5 h-5 text-white" />
           <span className="font-bold text-white">CertiChain</span>
         </Link>

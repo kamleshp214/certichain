@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { QRScanner } from '@/components/verify/qr-scanner';
-import { Search, QrCode, Shield, CheckCircle, Lock } from 'lucide-react';
+import { Search, QrCode, Shield, CheckCircle, Lock, Home } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -26,6 +27,19 @@ export default function VerifyPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      {/* Back to Home Button - Fixed Position */}
+      <Link href="/">
+        <motion.button
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg text-white text-sm font-medium transition-all duration-200 group"
+        >
+          <Home className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          <span className="hidden sm:inline">Back to Home</span>
+        </motion.button>
+      </Link>
+
       <div className="w-full max-w-2xl">
         {/* Header */}
         <motion.div
