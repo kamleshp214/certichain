@@ -5,43 +5,7 @@
 @tailwind utilities;
 
 
-/* Apply neutral grays globally */
-.bg-gray-50 { background-color: rgb(var(--gray-50)) !important; }
-.bg-gray-100 { background-color: rgb(var(--gray-100)) !important; }
-.bg-gray-200 { background-color: rgb(var(--gray-200)) !important; }
-.bg-gray-300 { background-color: rgb(var(--gray-300)) !important; }
-.bg-gray-400 { background-color: rgb(var(--gray-400)) !important; }
-.bg-gray-500 { background-color: rgb(var(--gray-500)) !important; }
-.bg-gray-600 { background-color: rgb(var(--gray-600)) !important; }
-.bg-gray-700 { background-color: rgb(var(--gray-700)) !important; }
-.bg-gray-800 { background-color: rgb(var(--gray-800)) !important; }
-.bg-gray-900 { background-color: rgb(var(--gray-900)) !important; }
-.bg-gray-950 { background-color: rgb(var(--gray-950)) !important; }
 
-.text-gray-50 { color: rgb(var(--gray-50)) !important; }
-.text-gray-100 { color: rgb(var(--gray-100)) !important; }
-.text-gray-200 { color: rgb(var(--gray-200)) !important; }
-.text-gray-300 { color: rgb(var(--gray-300)) !important; }
-.text-gray-400 { color: rgb(var(--gray-400)) !important; }
-.text-gray-500 { color: rgb(var(--gray-500)) !important; }
-.text-gray-600 { color: rgb(var(--gray-600)) !important; }
-.text-gray-700 { color: rgb(var(--gray-700)) !important; }
-.text-gray-800 { color: rgb(var(--gray-800)) !important; }
-.text-gray-900 { color: rgb(var(--gray-900)) !important; }
-.text-gray-950 { color: rgb(var(--gray-950)) !important; }
-
-.border-gray-50 { border-color: rgb(var(--gray-50)) !important; }
-.border-gray-100 { border-color: rgb(var(--gray-100)) !important; }
-.border-gray-200 { border-color: rgb(var(--gray-200)) !important; }
-.border-gray-300 { border-color: rgb(var(--gray-300)) !important; }
-.border-gray-400 { border-color: rgb(var(--gray-400)) !important; }
-.border-gray-500 { border-color: rgb(var(--gray-500)) !important; }
-.border-gray-600 { border-color: rgb(var(--gray-600)) !important; }
-.border-gray-700 { border-color: rgb(var(--gray-700)) !important; }
-.border-gray-800 { border-color: rgb(var(--gray-800)) !important; }
-.border-gray-900 { border-color: rgb(var(--gray-900)) !important; }
-.border-gray-950 { border-color: rgb(var(--gray-950)) !important; }
-/* ===== END NEUTRAL GRAY THEME ===== */
 
 @layer base {
   * {
